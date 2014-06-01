@@ -1,5 +1,8 @@
+"""
+Desky
+"""
+
 import sys
-import cv2
 from PyQt4 import QtGui, QtCore, Qt
 from ui import Ui_MainWindow
 

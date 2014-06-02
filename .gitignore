@@ -1,2 +1,3 @@
 ui.py
 *.pyc
+desky_config.json

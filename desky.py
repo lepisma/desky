@@ -7,10 +7,13 @@ Wrap your web app in desktop frame
 
 import sys, subprocess
 import socket
+import time
 
 from PyQt4.Qt import *
 
 import json
+
+MAX_PORT_SCAN_TRIES = 10 # 20 secs
 
 def port_check(port, host = '127.0.0.1'):
 	"""
@@ -92,6 +95,13 @@ def main():
 		else:
 			print "Something wicked happened while reading config"
 		sys.exit()
+		
+	try:
+		url = config['url']
+		check_port = config['check_port']
+	except KeyError:
+		print "No url and/or check_port specified, exiting"
+		sys.exit()
 
 	try:
 		cmd = config['cmd']
@@ -105,14 +115,15 @@ def main():
 	except KeyError:
 		print "No name specified, using 'Desky'"
 		name = "Desky"
-		
-	try:
-		url = config['url']
-		check_port = config['check_port']
-	except KeyError:
-		print "No url and/or check_port specified, exiting"
-		sys.exit()
 	
+	# Checking if server is up
+	tries = 0
+	while port_check(check_port) == False:
+		time.sleep(2)
+		tries += 1
+		if tries > MAX_PORT_SCAN_TRIES:
+			break
+
 	app = QApplication(sys.argv)
 	frame = Desky(url, name, server_process)
 	frame.show()

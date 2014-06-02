@@ -6,10 +6,33 @@ Wrap your web app in desktop frame
 """
 
 import sys, subprocess
+import socket
 
 from PyQt4.Qt import *
 
 import json
+
+def port_check(port, host = '127.0.0.1'):
+	"""
+	Checks whether the port is open or not
+
+	Parameters
+	----------
+	port : int
+		The port to check for
+	host : string
+		The port to check for
+	"""
+
+	try:
+		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		s.settimeout(1)
+		s.connect((host, port))
+		s.close()
+	except:
+		return False
+
+	return True
 
 class Desky(QWidget):
 	"""
@@ -60,6 +83,7 @@ def main():
 	Passes URL to qt webkit
 	"""
 
+	# Loading config
 	try:
 		config = json.load(open('desky_config.json', 'rb'))
 	except IOError as e:
@@ -77,16 +101,17 @@ def main():
 		print "No command to run, opening frame now"
 
 	try:
-		url = config['url']
-	except KeyError:
-		print "No url specified, exiting"
-		sys.exit()
-
-	try:
 		name = config['name']
 	except KeyError:
 		print "No name specified, using 'Desky'"
 		name = "Desky"
+		
+	try:
+		url = config['url']
+		check_port = config['check_port']
+	except KeyError:
+		print "No url and/or check_port specified, exiting"
+		sys.exit()
 	
 	app = QApplication(sys.argv)
 	frame = Desky(url, name, server_process)

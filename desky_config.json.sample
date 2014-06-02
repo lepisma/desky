@@ -1,1 +1,1 @@
-{"url": "Url to open", "cmd": "Command to run before startup", "name": "App Name"}
+{"url": "Url to open", "cmd": "Command to run before startup", "check_port" : 1111, "name": "App Name"}

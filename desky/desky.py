@@ -98,17 +98,26 @@ def main():
 		
 	try:
 		url = config['url']
-		check_port = config['check_port']
 	except KeyError:
-		print "No url and/or check_port specified, exiting"
+		print "No url specified, exiting"
 		sys.exit()
 
 	try:
 		cmd = config['cmd']
 		server_process = subprocess.Popen(cmd)
 	except KeyError:
+		cmd = False
 		server_process = False
 		print "No command to run, opening frame now"
+
+	if cmd != False:
+		try:
+			check_port = config['check_port']
+		except KeyError:
+			print "No check port specified, exiting"
+			sys.exit()
+	else:
+		check_port = False
 
 	try:
 		name = config['name']
@@ -116,13 +125,14 @@ def main():
 		print "No name specified, using 'Desky'"
 		name = "Desky"
 	
-	# Checking if server is up
-	tries = 0
-	while port_check(check_port) == False:
-		time.sleep(2)
-		tries += 1
-		if tries > MAX_PORT_SCAN_TRIES:
-			break
+	if check_port != False:
+		# Checking if server is up
+		tries = 0
+		while port_check(check_port) == False:
+			time.sleep(2)
+			tries += 1
+			if tries > MAX_PORT_SCAN_TRIES:
+				break
 
 	app = QApplication(sys.argv)
 	frame = Desky(url, name, server_process)

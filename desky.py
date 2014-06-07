@@ -23,6 +23,7 @@ def print_help():
 
 	print "Usage : `python desky.py` for running app"
 	print "`python desky.py pack` for packing"
+	print "`python desky.py packupx <upx-dir-path>` for packing with upx compression"
 
 def port_check(port, host = '127.0.0.1'):
 	"""
@@ -148,9 +149,14 @@ def main():
 	frame.show()
 	app.exec_()
 
-def pack():
+def pack(upx = False):
 	"""
 	Packs the app using pyinstaller
+
+	Parameters
+	----------
+	upx : string / bool
+		Path to upx directory for compression or False for no upx
 	"""
 
 	try:
@@ -172,6 +178,9 @@ def pack():
 
 	command = "pyinstaller desky.py --name=" + name + " --onefile --noconsole --distpath=./"
 
+	if upx != False:
+		command += " --upx-dir=" + upx
+
 	subprocess.call(command)
 
 if __name__ == '__main__':
@@ -180,6 +189,11 @@ if __name__ == '__main__':
 	elif len(sys.argv) == 2:
 		if sys.argv[1] == "pack":
 			pack()
+		else:
+			print_help()
+	elif len(sys.argv) == 3:
+		if sys.argv[1] == "packupx":
+			pack(sys.argv[2])
 		else:
 			print_help()
 	else:

@@ -19,6 +19,7 @@ Wrap your web app in a desktop window
 - Copy `desky.py` to project directory
 - Run app using `python desky.py`
 - Pack using `python desky.py pack`
+- For upx compression use `python desky.py packupx <upx-dir-path>`
 
 ###License
 

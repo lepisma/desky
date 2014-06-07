@@ -8,7 +8,7 @@
 /*.egg-info
 /*.egg
 
-/desky/*.json
+*.json
 
 
 /build/

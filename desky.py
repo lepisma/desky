@@ -15,6 +15,15 @@ import json
 
 MAX_PORT_SCAN_TRIES = 10 # 20 secs
 
+
+def print_help():
+	"""
+	Prints help for commands
+	"""
+
+	print "Usage : `python desky.py` for running app"
+	print "`python desky.py pack` for packing"
+
 def port_check(port, host = '127.0.0.1'):
 	"""
 	Checks whether the port is open or not
@@ -139,5 +148,39 @@ def main():
 	frame.show()
 	app.exec_()
 
+def pack():
+	"""
+	Packs the app using pyinstaller
+	"""
+
+	try:
+		config = json.load(open('desky_config.json', 'rb'))
+	except IOError as e:
+		if e.errno == 2:
+			print "Config file not found"
+		else:
+			print "Something wicked happened while reading config"
+		config = False
+
+	if config != False:
+		try:
+			name = config['name']
+		except KeyError:
+			name = 'Desky'
+	else:
+		name = 'Desky'
+
+	command = "pyinstaller desky.py --name=" + name + " --onefile --noconsole --distpath=./"
+
+	subprocess.call(command)
+
 if __name__ == '__main__':
-	main()
+	if len(sys.argv) == 1:
+		main()
+	elif len(sys.argv) == 2:
+		if sys.argv[1] == "pack":
+			pack()
+		else:
+			print_help()
+	else:
+		print_help()
